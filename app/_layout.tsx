@@ -1,24 +1,61 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Stack, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, StatusBar, View } from "react-native";
+// 1. Remove SafeAreaView import from react-native
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [isReady, setIsReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        setIsAuthenticated(!!token);
+      } catch (err) {
+        setIsAuthenticated(false);
+      } finally {
+        setIsReady(true);
+      }
+    };
+
+    initAuth();
+  }, []);
+
+  // 2. Redirect logic (Better than conditional rendering for Stacks)
+  // useEffect(() => {
+  //   if (!isReady) return;
+
+  //   if (isAuthenticated) {
+  //     // If logged in, go to tabs (or your main flow)
+  //     router.replace("./(client)"); 
+  //   } else {
+  //     // If NOT logged in, go to Auth
+  //     router.replace("./(auth)");
+  //   }
+  // }, [isReady, isAuthenticated]);
+
+  if (!isReady) {
+    return (
+      <View style={{ flex: 1, backgroundColor: "#000", justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#2D5FDE" />
+      </View>
+    );
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      
+      {/* 3. Keep the Stack clean. Do not wrap it in SafeAreaView */}
+      <Stack screenOptions={{ headerShown: false }}>
+    {/* <Stack.Screen name="(role)" /> */}
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(client)" /> 
+         {/* <Stack.Screen name="(tabs)" /> */}
       </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    </>
   );
 }

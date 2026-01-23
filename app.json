@@ -8,8 +8,16 @@
     "scheme": "serviceapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
+        "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.service.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
+       "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We use your location to find nearby service providers."
+      },
+      "config": {
+        "googleMapsApiKey": "YOUR_IOS_GOOGLE_MAPS_API_KEY"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +27,14 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+         "package": "com.service.app",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyASVVEx93b_ynZPSFhgquH_LwntbD9qc2c"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -38,7 +53,10 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-google-signin/google-signin"
     ],
     "experiments": {
       "typedRoutes": true,
