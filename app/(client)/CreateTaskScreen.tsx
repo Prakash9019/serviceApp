@@ -123,11 +123,11 @@ const handlePost = async () => {
       images: [],
     };
     console.log("Posting task with payload:", payload);
-    
+
     // 🚀 Call backend
     const res = await axiosClient.post("/tasks/create-order", payload);
 
-    const { task, order } = res.data;
+    const { task } = res.data;
 
     // ✅ Show success modal
     setSuccessModalVisible(true);
@@ -135,7 +135,6 @@ const handlePost = async () => {
     // Store for navigation after user clicks "View Post"
     setCreatedTask({
       task,
-      order,
     });
 
   } catch (err: any) {
